@@ -8,12 +8,12 @@ fn main() {
 }
 
 /// is it happy and prime?
-fn is_happy_prime(n: u32) -> bool {
+fn is_happy_prime(n: u64) -> bool {
 	is_happy(n) && is_prime(n)
 }
 
 /// Is it a happy number? https://en.wikipedia.org/wiki/Happy_number
-fn is_happy(mut number: u32) -> bool {
+fn is_happy(mut number: u64) -> bool {
     while number > 1 {
 		number = {
 		    let mut sum = 0;
@@ -35,7 +35,7 @@ fn is_happy(mut number: u32) -> bool {
 }
 
 /// is it prime?
-fn is_prime(n: u32) -> bool {
+fn is_prime(n: u64) -> bool {
     if n == 1 {
         false
     }

@@ -1,7 +1,27 @@
 //! Aufgabe 2.1: Primzahltest
 
 fn main() {
+	for n in 1..21 {
+		if is_prime(n) {
+			println!("{}*", n);
+		} else {
+			println!("{}", n);
+		}
+	}
+}
 
+/// Testet ob n eimne Primzahl ist
+fn is_prime(n:u64) -> bool {
+	if n > 1 { 
+		for i in 2..n {
+			if n % i == 0 {
+				return false;
+			}
+		}
+		true
+	} else {
+		false
+	}
 }
 
 #[test]

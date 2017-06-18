@@ -1,7 +1,22 @@
 //! Task 3.1: Rule 90
+const NUM_ITERATIONS: u64 = 20;
 
 fn main() {
-    // TODO: Task 1c)
+    fn pr(state: &[bool]) {
+        for &cell in state {
+            print!("{}", if cell { "\u{2588}\u{2588}" } else { "  " });
+            //print!("{}", if cell { "1" } else { "0" });
+        }
+        println!("");
+    }
+
+
+    let mut v = read_input();
+    for _ in 1..NUM_ITERATIONS {
+        pr(&v);
+        v = next_step(&v);
+    }
+    pr(&v);    
 }
 
 /// Reads a valid initial configuration for our automaton from the terminal.
@@ -37,10 +52,30 @@ fn read_input() -> Vec<bool> {
         buffer.trim().to_string()
     };
 
-    // TODO: Task 1a)
+    // a) Eingabe einlesen
+    let mut vec = Vec::with_capacity(input.len());
+    let chars = input.chars();
+    for c in chars {
+        vec.push(c == '1');
+    }
+    vec
 }
 
-// TODO: Task 1b)
+// b) Zeitschritt simulieren
+fn next_step(old: &[bool]) -> Vec<bool> {
+    let end = old.len();
+    let mut vec = Vec::with_capacity(end);
+
+    for index in 0..end {
+        let right_index = if index == end - 1 { 0 } else { index + 1 };
+        let left_index = if index == 0 { end - 1 } else { index - 1 };
+
+        // XOR
+        vec.push(old[left_index] ^ old[right_index]);
+    }
+    vec
+    
+}
 
 #[test]
 fn rule90_rules() {

@@ -2,10 +2,27 @@ fn main() {
     let mut arr = [61, 21, 27, 79, 57, 60, 46, 42, 27, 92, 66, 26];
 
     sort(&mut arr);
-    // TODO: print `arr`
+    println!("{:?}", arr);
 }
 
-// TODO: write `sort()` function
+// Sorts Array in-place using Selectionsort
+fn sort(arr: &mut [u64]) {
+    let len = arr.len();
+    for start_idx in 0..len {
+        let mut min_idx = start_idx;
+
+        for idx in start_idx..len {
+            if arr[idx] < arr[min_idx] {
+                min_idx = idx;
+            }
+        }
+
+        // Swap start_idx and min_idx
+        let val = arr[min_idx];
+        arr[min_idx] = arr[start_idx];
+        arr[start_idx] = val;
+    }
+}
 
 
 #[test]

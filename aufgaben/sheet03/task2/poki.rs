@@ -1,7 +1,162 @@
 //! Task 3.2: Pokemon
 
-fn main() {}
+fn main() {
+    fn choose_pokemon(player: &str) -> &'static PokemonModel {
+        fn print_pokemon_list() {
+            for poki in POKEDEX {
+                println!("#{:0>3} {}", poki.id, poki.name);
+            }
+        }
 
+        fn find_pokemon_by_name(name: &str) -> Option<&'static PokemonModel> {
+            for poki in POKEDEX {
+                if poki.name == name {
+                    return Some(poki);
+                }
+            }
+            None
+        }
+
+        loop {
+            println!("Player {}, please choose a Pokemon (or type '?' to get a complete list)", player);
+            let input = read_string();
+            if input == "?" {
+                print_pokemon_list();
+            } else if let Some(poki) = find_pokemon_by_name(&input) {
+                 return poki;
+             } else {
+                 println!("No pokemon with the name '{}' was found!", input);
+             }
+        }
+    }
+
+    let model_poki1 = choose_pokemon("Red");
+    let model_poki2 = choose_pokemon("Blue");
+
+    let mut poki1 = Pokemon::with_level(model_poki1, 5);
+    let mut poki2 = Pokemon::with_level(model_poki2, 5);
+    loop {
+        // Print status
+        println!(">>>>> Status: {} has {} HP, {} has {} HP", poki1.name(), poki1.stats().hp, poki2.name(), poki2.stats().hp);
+
+        // Execute both attack
+        if poki1.stats().speed > poki2.stats().speed {
+            // Red attacks blue
+            if poki1.attack(&mut poki2) {
+                break;
+            } else {
+               // BLue attacks red
+                if poki2.attack(&mut poki1) {
+                    break;
+                }
+            }
+        } else {
+            // Red attacks blue
+            if poki2.attack(&mut poki1) {
+                break;
+            } else {
+               // BLue attacks red
+                if poki1.attack(&mut poki2) {
+                    break;
+                }
+            }
+        }
+    }
+}
+
+// Represents a Pokemon
+struct Pokemon {
+    // model of the Pokemon
+    model: &'static PokemonModel,
+    stats: Stats,
+    level: u8,
+}
+
+impl Pokemon {
+    /// Constructor for a Pokemon
+    fn with_level(model: &'static PokemonModel, level:u8) -> Self{
+        Self { model : model, stats : Stats::at_level(model.base_stats, level), level : level }
+    }
+
+    /// Returns the stats
+    fn stats(&self) -> &Stats {
+        &self.stats
+    }
+
+    /// Returns the model
+    fn model(&self) -> &'static PokemonModel {
+        self.model
+    }
+
+    /// Returns the name
+    fn name(&self) -> &str {
+        self.model.name
+    }
+
+    // Returns the level of the Pokemon
+    fn level(&self) -> u8 {
+        self.level
+    }
+
+    /// Is the Pokemon still alive?
+    fn is_alive(&self) -> bool {
+        self.stats.hp > 0
+    }
+
+    /// Endures an attack
+    fn endure_attack(&mut self, attacker: &Pokemon, attack: Attack) {
+        let damage = attack_damage(attacker, self, attack);
+        self.stats.hp = self.stats.hp.saturating_sub(damage);
+    }
+
+    // This pokemon attacks another one
+    // Returns true if the target was elliminated
+    fn attack(&self, target: &mut Pokemon) -> bool{
+        // Tell the user to choose an attack
+        println!(">>>>> {} is about to attack! Which move shall it execute?", self.name());
+
+        // Print a list of available attacks
+        let num_attacks = self.model.attacks.len();
+        for i in 0..num_attacks {
+            println!("    {}: {}", i, self.model.attacks[i].name);
+        }
+
+        // Read attack ID from the user
+        println!("    !!! Please give me the attack ID:");
+
+
+        let attack;
+        loop {
+            let attack_id = read_usize();
+            if attack_id >= num_attacks {
+                println!("    !!! There is no attack with id {}!", attack_id);
+            } else {
+                attack = *self.model.attacks[attack_id];
+                break;
+            }
+        };
+
+        // Execute attack
+        target.endure_attack(self, attack);
+
+        // Status update
+        println!(
+            ">>>>> {} uses {}! ({} has {} HP left)",
+            self.name(),
+            attack.name,
+            target.name(),
+            target.stats().hp,
+        );
+
+        if target.is_alive() {
+            false
+        } else {
+            println!(">>>>> {} fainted!", target.name());
+            true
+        }
+    }
+
+}
 
 
 /// Describes an attack with all its properties. This type is similar to
@@ -125,6 +280,7 @@ struct PokemonModel {
     attacks: &'static [&'static Attack]
 }
 
+
 /// Describes the basic stats of a Pokemon.
 ///
 /// Each living Pokemon has an actual stat value, but each Pokemon kind also
@@ -194,44 +350,44 @@ impl Stats {
 /// term quite a bit. The correct and complete formula can be found [here][1].
 ///
 /// [1]: http://bulbapedia.bulbagarden.net/wiki/Damage#Damage_formula
-// fn attack_damage(attacker: &Pokemon, defender: &Pokemon, attack: Attack) -> u16 {
-//     // Depending on the attack category, get the correct stats
-//     let (attack_mod, defense_mod) = match attack.category {
-//         AttackCategory::Physical => {
-//             (attacker.stats().attack, defender.stats().defense)
-//         }
-//         AttackCategory::Special => {
-//             (attacker.stats().special_attack, defender.stats().special_defense)
-//         }
-//     };
+fn attack_damage(attacker: &Pokemon, defender: &Pokemon, attack: Attack) -> u16 {
+     // Depending on the attack category, get the correct stats
+     let (attack_mod, defense_mod) = match attack.category {
+         AttackCategory::Physical => {
+             (attacker.stats().attack, defender.stats().defense)
+         }
+         AttackCategory::Special => {
+             (attacker.stats().special_attack, defender.stats().special_defense)
+         }
+     };
 
-//     // Cast everything to f64 to reduce noise in actual formula
-//     let (attack_mod, defense_mod) = (attack_mod as f64, defense_mod as f64);
-//     let base_power = attack.base_power as f64;
-//     let attacker_level = attacker.level() as f64;
+    // Cast everything to f64 to reduce noise in actual formula
+     let (attack_mod, defense_mod) = (attack_mod as f64, defense_mod as f64);
+     let base_power = attack.base_power as f64;
+     let attacker_level = attacker.level() as f64;
 
-//     // The modifier only depends on the type effectiveness (in our simplified
-//     // version!).
-//     let modifier = match defender.model().type_ {
-//         PokemonType::One(ty) => {
-//             TypeEffectiveness::of_attack(attack.type_, ty).multiplier()
-//         }
-//         PokemonType::Two(ty_a, ty_b) => {
-//             TypeEffectiveness::of_attack(attack.type_, ty_a).multiplier()
-//                 * TypeEffectiveness::of_attack(attack.type_, ty_b).multiplier()
-//         }
-//     };
+     // The modifier only depends on the type effectiveness (in our simplified
+     // version!).
+     let modifier = match defender.model().type_ {
+         PokemonType::One(ty) => {
+             TypeEffectiveness::of_attack(attack.type_, ty).multiplier()
+         }
+         PokemonType::Two(ty_a, ty_b) => {
+             TypeEffectiveness::of_attack(attack.type_, ty_a).multiplier()
+                 * TypeEffectiveness::of_attack(attack.type_, ty_b).multiplier()
+         }
+     };
 
-//     // With every parameter prepared above, here is the formula
-//     (
-//         (
-//             ((2.0 * attacker_level + 10.0) / 250.0)
-//                 * (attack_mod / defense_mod)
-//                 * base_power
-//                 + 2.0
-//         ) * modifier
-//     ) as u16
-// }
+     // With every parameter prepared above, here is the formula
+     (
+         (
+             ((2.0 * attacker_level + 10.0) / 250.0)
+                 * (attack_mod / defense_mod)
+                 * base_power
+                 + 2.0
+         ) * modifier
+     ) as u16
+}
 
 // ===========================================================================
 // ===========================================================================

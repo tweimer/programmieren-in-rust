@@ -1,3 +1,8 @@
+/// Berechnet x! fuer gegebenes x
+fn factorial(x: u64) -> u64 {
+    (1..x + 1).product()
+}
+
 #[test]
 fn test_factorial() {
     assert_eq!(factorial(1), 1);

@@ -28,7 +28,7 @@ fn read_string() -> String {
         .expect("something went horribly wrong...");
 
     // Discard trailing newline
-    let new_len = buffer.trim_right().len();
+    let new_len = buffer.trim_end().len();
     buffer.truncate(new_len);
 
     buffer

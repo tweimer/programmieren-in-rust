@@ -6,59 +6,59 @@ fn main() {
     /// ; „beendet Anweisungen“
     println!("Hello World!");
 
-    /// Primitive Typen:
-    ///
-    /// Ganzzahlen:
-    ///  - i8, i16, i32, i64 (Feste Größe, mit Vorzeichen)
-    ///  - u8, u16, u32, u64 (Feste Größe, nur positiv)
-    ///  - isize, usize (pointer sized)
-    ///
-    /// Fließkomma:
-    ///  - f32 (float), f64 (double)
-    ///
-    /// Sonstige
-    ///  - bool (true, false)
-    ///  - char (Unicode Skalar, 32bit)
-    ///  - str (String slice)
+    // Primitive Typen:
+    //
+    // Ganzzahlen:
+    //  - i8, i16, i32, i64 (Feste Größe, mit Vorzeichen)
+    //  - u8, u16, u32, u64 (Feste Größe, nur positiv)
+    //  - isize, usize (pointer sized)
+    //
+    // Fließkomma:
+    //  - f32 (float), f64 (double)
+    //
+    // Sonstige
+    //  - bool (true, false)
+    //  - char (Unicode Skalar, 32bit)
+    //  - str (String slice)
 
-    /// - Variablenbindings über den let Befehl
-    /// - Compiler bestimmt den Typ automatisch
-    /// - Variablen sind immutable by default (nicht veränderbar)
-    /// - Variablennamen snake_case
+    // - Variablenbindings über den let Befehl
+    // - Compiler bestimmt den Typ automatisch
+    // - Variablen sind immutable by default (nicht veränderbar)
+    // - Variablennamen snake_case
     let a = 3;
     let b = 3.14;
     let c = true;
 
-    a = 4; // error: re-assignment of immutable variable `a`
+    //a = 4; // error: re-assignment of immutable variable `a`
 
     // Mit mut Keyword als mutable deklarieren
     let mut x = 3;
     x = 4; // ok
 
-    /// Typumwandlung/Casten mit Keyword 'as'
+    // Typumwandlung/Casten mit Keyword 'as'
     let x = 3i32;
     let y = x as u16;
 
 
-    /// Tupel: Heterogene, endliche Sequenz
-    /// (T, U, ...)
-    ///  - Länge/Arität fest zur Kompilierzeit!
-    ///  Beispiele:
-    ///  - (u8, bool)
-    ///  - (u64, char, i8)
-    ///  - (T,) // <- Tupel mit einem Element
-    ///  - ()   // <- Void
-    /// Zugriff mit .0, .1, usw. (oder destructure!)
+    // Tupel: Heterogene, endliche Sequenz
+    // (T, U, ...)
+    //  - Länge/Arität fest zur Kompilierzeit!
+    //  Beispiele:
+    //  - (u8, bool)
+    //  - (u64, char, i8)
+    //  - (T,) // <- Tupel mit einem Element
+    //  - ()   // <- Void
+    // Zugriff mit .0, .1, usw. (oder destructure!)
 
  
-    /// Arrays und Slides: Homogene Sequenz
-    /// Länge N fest zur Kompilierzeit!
-    /// Beispiele:
-    ///  - [bool; 3]
-    ///  - [u32; 8]
-    ///  - [T; 1]  // <- Array mit einem Element
-    /// Zugriff mit [0], [1], usw.
-    /// [T] -> Slice: „View“ in Speicherblock, z.B. Array (später mehr)
+    // Arrays und Slides: Homogene Sequenz
+    // Länge N fest zur Kompilierzeit!
+    // Beispiele:
+    //  - [bool; 3]
+    //  - [u32; 8]
+    //  - [T; 1]  // <- Array mit einem Element
+    // Zugriff mit [0], [1], usw.
+    // [T] -> Slice: „View“ in Speicherblock, z.B. Array (später mehr)
 
     // Explicit type annotations with `: T` (rarely necessary!)
     let a: bool = true;
@@ -87,7 +87,7 @@ fn main() {
     println!("a ist {} und b ist {}", a, b);
 
     let arr = [3, 1, 4];
-    println!("arr ist {}", arr);
+    println!("arr ist {:?}", arr);
 
 
     // Fixed size arrays, size in type (-> size fixed at compile time)
@@ -108,7 +108,7 @@ fn main() {
     println!("{}; {}; {}", d.len(), e[0], f[4]);  // output: "3; d; e"
 
     // Methoden auch auf primitiven Typen aufrufbar (später mehr) :
-    16.is_power_of_two(); // true
+    16u32.is_power_of_two(); // true
 
     /// Benannte, nutzerdefinierte Typen
     ///  - Struct
@@ -125,13 +125,14 @@ fn main() {
     };
     println!("x={}, y={}", point.x, point.y);
 
-    /// If-Else-Statement
-    /// - Bedingung ohne runde Klammern
-    /// - Rumpf zwingend mit geschweiften Klammern!
-    ///
-    /// Allgemein:
-    /// - Öffnende, geschweifte Klammer sollte nicht in eigene Zeile
-    /// - Schließende, geschweifte Klammer immer in eigene Zeile (außer vor else)
+    // If-Else-Statement
+    // - Bedingung ohne runde Klammern
+    // - Rumpf zwingend mit geschweiften Klammern!
+    //
+    // Allgemein:
+    // - Öffnende, geschweifte Klammer sollte nicht in eigene Zeile
+    // - Schließende, geschweifte Klammer immer in eigene Zeile (außer vor else)
+    let a = 5;
     if a == 4 {
         println!("If branch");
     } else if a > 10 {
@@ -140,10 +141,10 @@ fn main() {
         println!("Else branch");
     }
 
-    /// If-Else-Expression
-    ///  - Nur möglich wenn Else-Zweig vorhanden
-    ///  - Alle Zweige müssen den selben Typen zurückgeben
-    ///  - Vorsicht mit den Semikola! Semikolon wandelt Expression in Statement:
+    // If-Else-Expression
+    //  - Nur möglich wenn Else-Zweig vorhanden
+    //  - Alle Zweige müssen den selben Typen zurückgeben
+    //  - Vorsicht mit den Semikola! Semikolon wandelt Expression in Statement:
     let a = 5;
     let b = if a >= 50 { 100 } else { 0 };
     // type of c?
@@ -156,12 +157,13 @@ fn main() {
     };
 
 
-    /// break; und continue; funktionieren wie gewohnt in allen Schleifentypen
+    // break; und continue; funktionieren wie gewohnt in allen Schleifentypen
+    let mut a = 0;
     while a < 10 {
         a += 1;
     }
 
-    /// For-Schleife
+    // For-Schleife
     for i in 1..10 {
         println!("{}", i);
     }
@@ -175,17 +177,17 @@ fn main() {
         // wheeeeee
     }
 
-    loop {
-        // equivalent to `while true { }`
-        println!("yolo!");
-    }
+//    loop {
+//        // equivalent to `while true { }`
+//        println!("yolo!");
+//    }
 
-    /// Aufgabe 1.2: Collatz
-    /// Schreibt ein Programm, das für die Zahl 27 alle Schritte
-    /// des Collatz-Algorithmus ausgibt.
-    /// Die Ausgabe soll in der Form x -> y geschehen,
-    /// wobei x ein Zähler ist, welcher den aktuellen Schritt anzeigt,
-    /// und y für den aktuellen Wert der Eingabezahl steht.
+    // Aufgabe 1.2: Collatz
+    // Schreibt ein Programm, das für die Zahl 27 alle Schritte
+    // des Collatz-Algorithmus ausgibt.
+    // Die Ausgabe soll in der Form x -> y geschehen,
+    // wobei x ein Zähler ist, welcher den aktuellen Schritt anzeigt,
+    // und y für den aktuellen Wert der Eingabezahl steht.
     let mut number = 27;
     let mut count = 0;
 
@@ -201,7 +203,7 @@ fn main() {
         count += 1;
     }
     
-    /// Funktionen (siehe unten)
+    // Funktionen (siehe unten)
     foo();
     print_number(20);
     print_sum(20, 22);
@@ -236,10 +238,12 @@ fn square(n: i32) -> i32 { // returns i32
 }
 
 fn is_prime(n: u64) -> bool {
+    let x = 0;
     if x <= 1 {
-        /// early return
+        // early return
         return false;
     }
+    let prime = false;
     // lots of code calculating `prime: bool`
     prime
 }
@@ -253,5 +257,4 @@ fn double_triple(n: i32) -> (i32, i32) { // returns tuple
 fn absolute_value(n: i32) -> i32 {
     if n < 0 { -n } else { n }
 }
-
 
